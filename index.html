@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>돈의 심리학 — 단어 훈련</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Pretendard:wght@400;500;600&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #F7F6F2;
+    --surface: #FFFFFF;
+    --border: #E2E0D8;
+    --border-strong: #C8C5BA;
+    --text: #1A1916;
+    --text-2: #6B6860;
+    --text-3: #A09D96;
+    --green: #1D9E75;
+    --green-light: #E1F5EE;
+    --green-dark: #0F6E56;
+    --amber: #BA7517;
+    --amber-light: #FAEEDA;
+    --red: #A32D2D;
+    --red-light: #FCEBEB;
+    --font: 'Pretendard', -apple-system, sans-serif;
+    --mono: 'DM Mono', monospace;
+  }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 2rem 1rem 4rem;
+  }
+
+  .container { max-width: 680px; margin: 0 auto; }
+
+  /* Header */
+  .site-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .site-title { font-size: 15px; font-weight: 600; letter-spacing: -0.02em; }
+  .site-sub { font-size: 12px; color: var(--text-3); font-family: var(--mono); }
+
+  /* Progress */
+  .progress-section { margin-bottom: 1.5rem; }
+  .progress-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .progress-meta span { font-size: 12px; color: var(--text-3); font-family: var(--mono); }
+  .progress-track { height: 3px; background: var(--border); border-radius: 2px; }
+  .progress-fill { height: 3px; background: var(--green); border-radius: 2px; transition: width 0.5s ease; }
+
+  /* Stats */
+  .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 1.5rem; }
+  .stat { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; }
+  .stat-n { font-size: 24px; font-weight: 600; font-family: var(--mono); letter-spacing: -0.03em; }
+  .stat-l { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+
+  /* Cards */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.5rem;
+    margin-bottom: 12px;
+  }
+
+  /* Day badge */
+  .day-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 500;
+    font-family: var(--mono);
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+    letter-spacing: 0.04em;
+  }
+  .badge-weekday { background: var(--green-light); color: var(--green-dark); }
+  .badge-friday { background: var(--amber-light); color: var(--amber); }
+
+  /* Word chips */
+  .word-section { margin-bottom: 1.25rem; }
+  .word-section-label { font-size: 11px; color: var(--text-3); font-family: var(--mono); margin-bottom: 8px; letter-spacing: 0.06em; text-transform: uppercase; }
+  .word-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 5px 12px;
+    background: var(--bg);
+    border: 1px solid var(--border-strong);
+    border-radius: 6px;
+    color: var(--text);
+  }
+
+  /* Sentences */
+  .sentence-item { margin-bottom: 1.25rem; }
+  .sentence-item:last-of-type { margin-bottom: 0; }
+  .s-num { font-size: 11px; font-family: var(--mono); color: var(--text-3); margin-bottom: 5px; }
+  .ko-sentence {
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--text-2);
+    padding: 10px 14px;
+    background: var(--bg);
+    border-radius: 8px;
+    border-left: 2px solid var(--green);
+    margin-bottom: 8px;
+  }
+  textarea {
+    width: 100%;
+    font-family: var(--font);
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    resize: vertical;
+    min-height: 58px;
+    transition: border-color 0.15s;
+  }
+  textarea:focus { outline: none; border-color: var(--green); }
+  textarea::placeholder { color: var(--text-3); }
+
+  /* Buttons */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 1.25rem;
+    padding: 10px 22px;
+    background: var(--green);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+  }
+  .btn-primary:hover { background: var(--green-dark); }
+  .btn-primary:active { transform: scale(0.98); }
+  .btn-primary:disabled { background: var(--border); color: var(--text-3); cursor: not-allowed; transform: none; }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 1rem;
+    padding: 10px 22px;
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    font-family: var(--font);
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-secondary:hover { background: var(--bg); }
+
+  /* Feedback */
+  .feedback-item {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 10px;
+  }
+  .feedback-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .status-pill {
+    font-size: 11px;
+    font-weight: 500;
+    font-family: var(--mono);
+    padding: 2px 8px;
+    border-radius: 20px;
+  }
+  .pill-correct { background: var(--green-light); color: var(--green-dark); }
+  .pill-partial { background: var(--amber-light); color: var(--amber); }
+  .pill-incorrect { background: var(--red-light); color: var(--red); }
+  .target-word { font-size: 12px; font-family: var(--mono); color: var(--text-3); }
+
+  .user-answer {
+    font-size: 13px;
+    color: var(--text-2);
+    font-style: italic;
+    padding: 7px 11px;
+    background: var(--bg);
+    border-radius: 6px;
+    margin-bottom: 8px;
+  }
+  .corrected-answer {
+    font-size: 13px;
+    color: var(--green-dark);
+    padding: 7px 11px;
+    background: var(--green-light);
+    border-radius: 6px;
+    margin-bottom: 8px;
+  }
+  .explanation {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text-2);
+  }
+
+  /* Loading */
+  .loading-line {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--text-3);
+    padding: 1rem 0;
+    font-family: var(--mono);
+  }
+  .spinner {
+    width: 14px; height: 14px;
+    border: 2px solid var(--border);
+    border-top-color: var(--green);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    flex-shrink: 0;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .error-box {
+    font-size: 13px;
+    color: var(--red);
+    background: var(--red-light);
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-top: 8px;
+  }
+
+  /* Divider */
+  .divider { height: 1px; background: var(--border); margin: 1.25rem 0; }
+
+  /* Session complete */
+  .session-complete {
+    text-align: center;
+    padding: 2rem;
+  }
+  .session-complete h2 { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+  .session-complete p { font-size: 14px; color: var(--text-2); }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header class="site-header">
+    <span class="site-title">돈의 심리학 — 단어 훈련</span>
+    <span class="site-sub" id="headerDate"></span>
+  </header>
+
+  <!-- Progress -->
+  <div class="progress-section">
+    <div class="progress-meta">
+      <span id="progressLabel">불러오는 중...</span>
+      <span id="progressPct">0%</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill" style="width:0%"></div>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat">
+      <div class="stat-n" id="statTotal">—</div>
+      <div class="stat-l">전체 단어</div>
+    </div>
+    <div class="stat">
+      <div class="stat-n" id="statDone">—</div>
+      <div class="stat-l">학습 완료</div>
+    </div>
+    <div class="stat">
+      <div class="stat-n" id="statWrong">—</div>
+      <div class="stat-l">복습 대기</div>
+    </div>
+  </div>
+
+  <!-- Quiz Card -->
+  <div class="card" id="quizCard">
+    <span class="day-badge badge-weekday" id="dayBadge">로딩 중</span>
+
+    <div class="word-section">
+      <div class="word-section-label">오늘의 단어</div>
+      <div class="word-chips" id="wordChips"></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div id="sentencesArea">
+      <div class="loading-line"><div class="spinner"></div>문장 생성 중...</div>
+    </div>
+
+    <button class="btn-primary" id="submitBtn" onclick="submitAnswers()" disabled>
+      첨삭 받기 →
+    </button>
+  </div>
+
+  <!-- Feedback Card -->
+  <div class="card" id="feedbackCard" style="display:none;">
+    <div class="word-section-label" style="font-size:11px; font-family:var(--mono); color:var(--text-3); letter-spacing:0.06em; text-transform:uppercase; margin-bottom:14px;">첨삭 결과</div>
+    <div id="feedbackArea"></div>
+    <button class="btn-secondary" onclick="nextSession()">다음 세트 →</button>
+  </div>
+
+</div>
+
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getFirestore, doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDv0y67GcZpEUrZc5A8qxdbHigoTd35kAA",
+  authDomain: "homework-fb10d.firebaseapp.com",
+  databaseURL: "https://homework-fb10d-default-rtdb.firebaseio.com",
+  projectId: "homework-fb10d",
+  storageBucket: "homework-fb10d.firebasestorage.app",
+  messagingSenderId: "1086635951672",
+  appId: "1:1086635951672:web:87261474359372356ac8cd"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// ── 단어 목록 ──────────────────────────────────────────────
+const ALL_WORDS = ["insecurity","apropos of nothing","cackling","shattered","incredulously","low-key","baffled","illiquid assets","foreclosure auction","financial outcomes","life expectancy","scoop up","virtually","compelling evidence","agony","imperil","revolve around","rebuttal","affect","effect","basking","inwardly","genuinely","come across as","complacent","incinerators","outrageous","atrocious","hit it big","by and large","strain","crippling debt","entitle","proper","dignified","reiterate","saving vehicle","wing it","acclimate","petition","proceeds","rummage sale","hooked up","couldn't get enough of","hit it off","staggeringly","head start","household name","prodigy","by his own account","by any measure","reminiscing","trails off","implicitly","predominantly","by sheer chance","acknowledge","chalk up","traits","emulate","pin down","transaction","to hell with it","flout","scrappy","visionary","flagrant","circumventing","laid out","supremely shrewd","shrewd","point in","fall in your favor","eloquence","entail","third base","unfathomable","by all accounts","alleged","irrevocably","swindle","endeavor","siphons away","securities","leave on the table","resort to","phenomenal","ravenous","perpetual","exacerbate","you're off the races","acumen","pubescent","geriatric","impractical","exponential","swinging for the fences","commodity","wrap your head around","one-off hits","frugality","cement","distraught","in a stroke of luck","blowout","over one's head","wind up","set out","rest on our laurels","sully","acutely","gnaw at","havoc","ensue","redundant","in the face of","adversity","tangible","belabor","effectively","subset","converge upon","stupendously","put on the map","full-blown","bonanza","dud","thumping","fly-by-night","measure","churn out","commanding a market cap","flop","offset","wins by a mile","punctuated","horrendous","blip","incur","by design","preemptively","stick out","denominator","chronically","dependable","predictor","intrinsic","score","reactance","gig","conceivable","recluse","refinery","have one's ear","gawk","repossess","default on","morsel","brokerage statements","gauge","vigorous","accrue","ingrain","restraint","insolvency","shroud","bloat","propensity","downpayment","pounce","span","leeway","merely","ailment","hunch","obsolete","placate","stave off","nuisance","blunt","taper","absurdly","unfazed","undeterred","liability","smattering","arithmetic","the leap of faith","unassailable","calibrate","lifeblood","indefinitely","in their wake","prompt","conceive","cranky","confiscate","unprecedented","withstand","risk-averse","disclosures","heavy industry","prone","boom-and-bust","contrarian","be wedded to","render","annotated","antiquated","quirk","rebut","in time","takeaway","nuance","decent chance","bring down","redundancy","crapshoot","pundit","eventual","exploit","ample cash","mishap","ripe","rule of thumb","charitable","underpinning","opt to","austere","tails off","detonate","firsthand","overdue","subsequent","dynastic","sprawling","entrenched","outweigh","upside","taunt","upheaval","law-abiding","tactical","opportune","drawdowns","obedient","pitch in","come due","disposition","implosion","scarce","hindsight","spur","sober","flip","plunge","quaint","oblivious","complacency","compelling","flare","reverting","ramblings","absurd","shrug off","plausible","aloof","drown out","imminent","averse","asymmetric","barrel","gyrations","afflict","extrapolate","creep up","fracking","incentivize","push back","tinker","credence","prevails","underscore","lay people","keep tabs on","hover","hustle","dumbfound","prudence","obliterate","inflict","potent","armistice","stake","predate","hasten","demise","plaster over","tribe","default","unequivocally","indispensable","outright","warp","at one's disposal","vagary","lay out","awry","crude","caveat","benevolent","assert","go out of your way","flashy","earmark","ruinous","fend off","serene","living well below one's means","toggle","keeping up with the Joneses","on paper","halt","grind to a halt","budge","thrift","diverge from","splurge","pent-up","embolden","spree","expenditure","subsidize","curtail","substantial","bleak","rubble","percentile","hyperbole","surplus","rehash","precipitous","preposterous","skew","shed","quantitative easing","backstop","meritocratic","scoff","keenly"];
+
+// ── 상태 ──────────────────────────────────────────────────
+let state = {
+  remaining: [],
+  done: [],
+  wrongWords: [],
+  currentWords: [],
+  currentSentences: [],
+  targetWords: [],
+  answers: [],
+  isFriday: false
+};
+
+// ── Firebase 저장/로드 ────────────────────────────────────
+const DOC_REF = doc(db, 'vocab_progress', 'maaya');
+
+async function loadProgress() {
+  try {
+    const snap = await getDoc(DOC_REF);
+    if (snap.exists()) {
+      const data = snap.data();
+      state.done = data.done || [];
+      state.wrongWords = data.wrongWords || [];
+      state.remaining = ALL_WORDS.filter(w => !state.done.includes(w));
+      if (state.remaining.length === 0) {
+        state.remaining = [...ALL_WORDS];
+        state.done = [];
+      }
+    } else {
+      state.remaining = [...ALL_WORDS];
+    }
+  } catch(e) {
+    console.error('Firebase load error:', e);
+    state.remaining = [...ALL_WORDS];
+  }
+  updateUI();
+  startSession();
+}
+
+async function saveProgress() {
+  try {
+    await setDoc(DOC_REF, {
+      done: state.done,
+      wrongWords: state.wrongWords,
+      updatedAt: new Date().toISOString()
+    });
+  } catch(e) {
+    console.error('Firebase save error:', e);
+  }
+}
+
+// ── UI 업데이트 ──────────────────────────────────────────
+function updateUI() {
+  const total = ALL_WORDS.length;
+  const done = state.done.length;
+  const pct = Math.round((done / total) * 100);
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('statDone').textContent = done;
+  document.getElementById('statWrong').textContent = state.wrongWords.length;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = `${done} / ${total} 완료`;
+  document.getElementById('progressPct').textContent = pct + '%';
+
+  const days = ['일','월','화','수','목','금','토'];
+  const today = new Date();
+  document.getElementById('headerDate').textContent =
+    `${today.getFullYear()}.${String(today.getMonth()+1).padStart(2,'0')}.${String(today.getDate()).padStart(2,'0')} ${days[today.getDay()]}`;
+}
+
+// ── 세션 시작 ────────────────────────────────────────────
+function getDayInfo() {
+  const d = new Date().getDay();
+  const days = ['일','월','화','수','목','금','토'];
+  if (d === 5) return { label: '금요일 복습', isFriday: true, cls: 'badge-friday' };
+  return { label: days[d] + '요일 학습', isFriday: false, cls: 'badge-weekday' };
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startSession() {
+  const { label, isFriday, cls } = getDayInfo();
+  state.isFriday = isFriday;
+
+  const badge = document.getElementById('dayBadge');
+  badge.textContent = label;
+  badge.className = 'day-badge ' + cls;
+
+  if (isFriday && state.wrongWords.length > 0) {
+    state.currentWords = shuffle(state.wrongWords).slice(0, 20);
+  } else {
+    const pick = Math.min(5, state.remaining.length);
+    state.currentWords = shuffle(state.remaining).slice(0, pick);
+  }
+
+  // render chips
+  document.getElementById('wordChips').innerHTML =
+    state.currentWords.map(w => `<span class="chip">${w}</span>`).join('');
+
+  state.answers = Array(state.currentWords.length).fill('');
+  document.getElementById('feedbackCard').style.display = 'none';
+  document.getElementById('quizCard').style.display = 'block';
+  document.getElementById('submitBtn').disabled = true;
+
+  generateSentences();
+}
+
+// ── 문장 생성 ────────────────────────────────────────────
+async function generateSentences() {
+  const area = document.getElementById('sentencesArea');
+  area.innerHTML = '<div class="loading-line"><div class="spinner"></div>한국어 문장 생성 중...</div>';
+
+  const n = state.currentWords.length;
+  const prompt = `You are a vocabulary trainer. Given these ${n} English words/phrases from "The Psychology of Money": ${state.currentWords.join(', ')}
+
+Create exactly ${n} Korean sentences. Rules:
+1. Each sentence maps to EXACTLY ONE word/phrase (all words used, one per sentence)
+2. The sentence should be naturally translatable to English USING that target word — but do NOT include the English word or its direct Korean translation
+3. Mix economic/financial context AND everyday life context
+4. Make sentences feel natural in Korean, not like translation exercises
+
+Return ONLY valid JSON (no markdown, no preamble):
+{"sentences":["Korean sentence 1","Korean sentence 2",...],"targetWords":["word1","word2",...]}`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1200,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content.map(b => b.text || '').join('');
+    const parsed = JSON.parse(text.replace(/```json|```/g, '').trim());
+    state.currentSentences = parsed.sentences;
+    state.targetWords = parsed.targetWords;
+    state.answers = Array(n).fill('');
+    renderSentences();
+    document.getElementById('submitBtn').disabled = false;
+  } catch(e) {
+    area.innerHTML = '<div class="error-box">문장 생성 중 오류가 발생했습니다. 페이지를 새로고침해 주세요.</div>';
+  }
+}
+
+function renderSentences() {
+  const area = document.getElementById('sentencesArea');
+  area.innerHTML = state.currentSentences.map((sent, i) => `
+    <div class="sentence-item">
+      <div class="s-num">${String(i+1).padStart(2,'0')}</div>
+      <div class="ko-sentence">${sent}</div>
+      <textarea
+        id="ans${i}"
+        placeholder="영어로 작성하세요..."
+        oninput="window._answers[${i}]=this.value"
+        rows="2"
+      ></textarea>
+    </div>
+  `).join('');
+  window._answers = [...state.answers];
+}
+
+// ── 제출 & 첨삭 ──────────────────────────────────────────
+window.submitAnswers = async function() {
+  state.answers = window._answers || state.answers;
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = '첨삭 중...';
+
+  const pairs = state.currentSentences.map((sent, i) => ({
+    korean: sent,
+    targetWord: state.targetWords[i] || state.currentWords[i],
+    userAnswer: state.answers[i] || '(미작성)'
+  }));
+
+  const prompt = `You are a precise English writing coach for a Korean learner.
+
+Words being studied: ${state.currentWords.join(', ')}
+
+Evaluate each attempt:
+${pairs.map((p, i) => `[${i+1}]\nKorean prompt: ${p.korean}\nTarget word: ${p.targetWord}\nStudent's answer: ${p.userAnswer}`).join('\n\n')}
+
+For each answer evaluate:
+- Whether the target word/phrase was used correctly (or a close acceptable variant)
+- Grammar: articles (a/an/the), prepositions, tense, word order, subject-verb agreement
+- Natural English expression vs. Korean-influenced phrasing
+
+Return ONLY valid JSON:
+{"results":[{"status":"correct|partial|incorrect","corrected":"best version of the sentence","explanation":"Korean explanation (2-4 sentences). Be specific: cite the exact grammar issue, explain WHY it's wrong, and note if wrong word was chosen. Mention articles/prepositions explicitly when relevant."}]}`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 2000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content.map(b => b.text || '').join('');
+    const parsed = JSON.parse(text.replace(/```json|```/g, '').trim());
+    renderFeedback(parsed.results, pairs);
+    trackProgress(parsed.results);
+    await saveProgress();
+  } catch(e) {
+    document.getElementById('feedbackCard').style.display = 'block';
+    document.getElementById('feedbackArea').innerHTML =
+      '<div class="error-box">첨삭 중 오류가 발생했습니다. 다시 시도해 주세요.</div>';
+  }
+
+  btn.disabled = false;
+  btn.textContent = '첨삭 받기 →';
+};
+
+function renderFeedback(results, pairs) {
+  const card = document.getElementById('feedbackCard');
+  const area = document.getElementById('feedbackArea');
+  card.style.display = 'block';
+
+  area.innerHTML = results.map((r, i) => {
+    const pillClass = r.status === 'correct' ? 'pill-correct' : r.status === 'partial' ? 'pill-partial' : 'pill-incorrect';
+    const pillLabel = r.status === 'correct' ? '✓ 정답' : r.status === 'partial' ? '△ 부분' : '✕ 오답';
+    return `
+      <div class="feedback-item">
+        <div class="feedback-header">
+          <span class="status-pill ${pillClass}">${pillLabel}</span>
+          <span class="target-word">${pairs[i].targetWord}</span>
+        </div>
+        <div class="user-answer">"${pairs[i].userAnswer}"</div>
+        ${r.status !== 'correct' ? `<div class="corrected-answer">→ ${r.corrected}</div>` : ''}
+        <div class="explanation">${r.explanation}</div>
+      </div>
+    `;
+  }).join('');
+
+  card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function trackProgress(results) {
+  results.forEach((r, i) => {
+    const word = state.targetWords[i] || state.currentWords[i];
+    if (r.status !== 'correct') {
+      if (!state.wrongWords.includes(word)) state.wrongWords.push(word);
+    } else {
+      state.wrongWords = state.wrongWords.filter(w => w !== word);
+    }
+  });
+
+  if (!state.isFriday) {
+    state.currentWords.forEach(w => {
+      if (!state.done.includes(w)) state.done.push(w);
+      state.remaining = state.remaining.filter(r => r !== w);
+    });
+    if (state.remaining.length === 0) {
+      state.remaining = [...ALL_WORDS];
+      state.done = [];
+    }
+  }
+  updateUI();
+}
+
+window.nextSession = function() {
+  document.getElementById('feedbackCard').style.display = 'none';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  startSession();
+};
+
+// ── 초기화 ───────────────────────────────────────────────
+loadProgress();
+</script>
+</body>
+</html>
